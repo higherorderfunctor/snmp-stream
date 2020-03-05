@@ -1,0 +1,17 @@
+let g:ale_linters = {
+  \ 'cpp': ['clang', 'clangcheck', 'clangtidy', 'gcc'],
+  \ 'python': ['flake8', 'pylint', 'mypy']
+\ }
+
+let g:ale_fixers = {
+  \  '*': ['remove_trailing_lines', 'trim_whitespace'],
+  \ 'cpp': ['clangtidy', 'clang-format']
+\ }
+
+let g:ale_c_gcc_options = '-std=c11 -Wall'
+let g:ale_c_clang_options = '-std=c11 -Wall'
+
+let g:ale_cpp_gcc_options = '-std=c++17 -Wall'
+let g:ale_cpp_clang_options = '-std=c++17 -Wall -fsized-deallocation'
+let g:ale_cpp_clangcheck_options = '-- -std=c++17 -Wall'
+let g:ale_cpp_clangtidy_options = '-std=c++17 -Wall'

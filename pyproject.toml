@@ -1,0 +1,49 @@
+[tool.poetry]
+name = "snmp-stream"
+version = "0.1.0"
+description = "Opinionated SNMP library for network analysis."
+authors = ["Christopher Aubut <christopher@aubut.me>"]
+
+build = "build.py"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+numpy = "^1.18.0"
+jupyterlab = "^1.2.4"
+numba = "^0.48.0"
+pandas = "^1.0.1"
+kaitaistruct = {git = "https://github.com/higherorderfunctor/kaitai_struct_python_runtime.git", rev = "setup_fix"}
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+hypothesis = "^4.57.1"
+snmpsim = "^0.4.7"
+mypy = "^0.761"
+numpy-stubs = {git = "https://github.com/numpy/numpy-stubs.git"}
+sphinx = "^2.3.1"
+sphinx_rtd_theme = "^0.4.3"
+breathe = "^4.14.0"
+isort = {version = "^4.3.21", extras = ["pyproject"]}
+pylint = "^2.4.4"
+flake8 = "^3.7.9"
+flake8-isort = "^2.8.0"
+flake8-docstrings = "^1.5.0"
+bandit = "^1.6.2"
+sphinx-autodoc-typehints = "^1.10.3"
+
+[tool.isort]
+line_length = 100
+virtual_env = ".env"
+skip = ["build", "vendor", "__pycache__"]
+skip_glob = [".*/**"]
+not_skip = ["__init__.py"]
+known_first_party = ["snmp_stream", "tests"]
+sections= ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+indent = "    "
+multi_line_output = 5
+default_section = "THIRDPARTY"
+no_lines_before = "LOCALFOLDER"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

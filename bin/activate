@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Useful environment settings for running linters
+
+source .env/bin/activate
+
+BUILD_PATH=$(poetry run python -c 'import sys;import sysconfig;print("build/temp.", sysconfig.get_platform(), "-", ".".join(map(str, sys.version_info[:2])), sep="")')
+
+PYTHON_PATH=$(poetry env info --path)
+
+PYTHON_VERSION=$(poetry run python -c 'import sys;print(".".join(map(str, sys.version_info[:2])), sep="")')
+
+PYTHON_HEADERS=$(echo "$(poetry run python-config --includes | sed -e 's/^-I//' -e 's/ -I/\n/')" | sort -u | paste -sd ':')
+
+# setup include paths
+export CPLUS_INCLUDE_PATH="${PYTHON_HEADERS}"
+export CPLUS_INCLUDE_PATH="${CPLUS_INCLUDE_PATH}:${BUILD_PATH}/include"
+export CPLUS_INCLUDE_PATH="${CPLUS_INCLUDE_PATH}:vendor/pybind11/include"
+export CPLUS_INCLUDE_PATH="${CPLUS_INCLUDE_PATH}:vendor/boost"
+export CPLUS_INCLUDE_PATH="${CPLUS_INCLUDE_PATH}:vendor/soq/src/libsoq"
+export CPLUS_INCLUDE_PATH="${CPLUS_INCLUDE_PATH}:include"
+
+# setup compile_commands.json
+ln -sfn ${BUILD_PATH}/compile_commands.json .
+
+mkdir -p .stubs
+ln -sfn  "${PYTHON_PATH}/lib/python${PYTHON_VERSION}/site-packages/hypothesis" .stubs
