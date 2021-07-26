@@ -116,7 +116,7 @@ def snmp_request_types() -> st.SearchStrategy[SnmpRequest.SnmpRequestType]:
 def snmp_requests(
         type: st.SearchStrategy[SnmpRequest.SnmpRequestType] = snmp_request_types(),
         host: st.SearchStrategy[Text] = st.text(),
-        communities: st.SearchStrategy[Community] = communities(),
+        community: st.SearchStrategy[Community] = communities(),
         oids: st.SearchStrategy[Sequence[ObjectIdentity]] = (
             st.lists(
                 oids(), min_size=1
@@ -129,7 +129,7 @@ def snmp_requests(
     # pylint: disable=too-many-arguments, redefined-outer-name, redefined-builtin
     """Generate an SnmpRequest."""
     return st.builds(
-        SnmpRequest, type, host, communities, oids, st.none(), req_id, config
+        SnmpRequest, type, host, community, oids, st.none(), req_id, config
     )
 
 
@@ -149,17 +149,16 @@ def snmp_error_types() -> st.SearchStrategy[SnmpError.SnmpErrorType]:
 
 
 def snmp_errors(
-        type:  st.SearchStrategy[SnmpError.SnmpErrorType] = snmp_error_types(),
-        request:  st.SearchStrategy[SnmpRequest] = snmp_requests(),
-        sys_errno:  st.SearchStrategy[Optional[int]] = optionals(int64s()),
-        snmp_errno:  st.SearchStrategy[Optional[int]] = optionals(int64s()),
-        err_stat:  st.SearchStrategy[Optional[int]] = optionals(int64s()),
-        err_index:  st.SearchStrategy[Optional[int]] = optionals(int64s()),
-        err_oid: st.SearchStrategy[Optional[ObjectIdentity]] = optionals(oids()),
-        message:    st.SearchStrategy[Optional[Text]] = optionals(st.text())
+        type: st.SearchStrategy[SnmpError.SnmpErrorType] = snmp_error_types(),
+        request: st.SearchStrategy[SnmpRequest] = snmp_requests(),
+        sys_errno: st.SearchStrategy[Optional[int]] = optionals(int64s()),
+        snmp_errno: st.SearchStrategy[Optional[int]] = optionals(int64s()),
+        err_stat: st.SearchStrategy[Optional[int]] = optionals(int64s()),
+        err_index: st.SearchStrategy[Optional[int]] = optionals(int64s()),
+        message: st.SearchStrategy[Optional[Text]] = optionals(st.text())
 ) -> st.SearchStrategy[SnmpError]:
     # pylint: disable=too-many-arguments, redefined-outer-name, redefined-builtin
     """Generate an SnmpError."""
     return st.builds(
-        SnmpError, type, request, sys_errno, snmp_errno, err_stat, err_index, err_oid, message
+        SnmpError, type, request, sys_errno, snmp_errno, err_stat, err_index, st.none(), message
     )
