@@ -1,7 +1,7 @@
 """Hypothesis search strategies."""
 
 from functools import partial
-from typing import Optional, Sequence, Text, TypeVar, Union
+from typing import Optional, Sequence, Text, Union
 
 import hypothesis.strategies as st
 
@@ -11,8 +11,6 @@ from snmp_stream._snmp_stream import (
 )
 from tests.strategies import int64s, optionals, uint64s
 
-T = TypeVar('T')
-
 
 def oids(
         min_size: int = 0,
@@ -21,7 +19,7 @@ def oids(
 ) -> st.SearchStrategy[ObjectIdentity]:
     """Generate an ObjectIdentity."""
     def create_object_identity(
-            oids: Sequence[int],
+            oids: Sequence[int],  # pylint: disable=redefined-outer-name
             text: Optional[Text] = None
     ) -> ObjectIdentity:
         _oids: Union[Sequence[int], Text]
@@ -46,14 +44,14 @@ def oids(
             )
         ),
         st.builds(  # type: ignore
-            partial(create_object_identity, text=''),  # type: ignore
+            partial(create_object_identity, text=''),
             st.lists(  # type: ignore
                 uint64s(),
                 min_size=min_size, max_size=max_size - prefix_len
             )
         ),
         st.builds(  # type: ignore
-            partial(create_object_identity, text='.'),  # type: ignore
+            partial(create_object_identity, text='.'),
             st.lists(  # type: ignore
                 uint64s(),
                 min_size=min_size, max_size=max_size - prefix_len
@@ -74,7 +72,7 @@ def oid_ranges(
         if start and stop and stop < start:
             return ObjectIdentityRange(stop, start)
         return ObjectIdentityRange(start, stop)
-    return st.builds(create_object_identity_range, start, stop)  # type: ignore
+    return st.builds(create_object_identity_range, start, stop)
 
 
 def versions() -> st.SearchStrategy[Community.Version]:
@@ -90,7 +88,7 @@ def communities(
     version: st.SearchStrategy[Community.Version] = versions()
 ) -> st.SearchStrategy[Community]:
     """Generate a Community."""
-    return st.builds(  # type: ignore
+    return st.builds(
         Community, string, version
     )
 
@@ -102,7 +100,7 @@ def configs(
     max_async_sessions: st.SearchStrategy[Optional[int]] = optionals(uint64s(min_value=1))
 ) -> st.SearchStrategy[Config]:
     """Generate a Config."""
-    return st.builds(  # type: ignore
+    return st.builds(
         Config, retries, timeout, max_response_var_binds_per_pdu, max_async_sessions
     )
 
@@ -118,21 +116,20 @@ def snmp_request_types() -> st.SearchStrategy[SnmpRequest.SnmpRequestType]:
 def snmp_requests(
         type: st.SearchStrategy[SnmpRequest.SnmpRequestType] = snmp_request_types(),
         host: st.SearchStrategy[Text] = st.text(),
-        communities: st.SearchStrategy[Sequence[Community]] = st.lists(communities(), min_size=1),
+        communities: st.SearchStrategy[Community] = communities(),
         oids: st.SearchStrategy[Sequence[ObjectIdentity]] = (
             st.lists(
                 oids(), min_size=1
             )
             .filter(lambda x: test_ambiguous_root_oids(x) is None)
         ),
-        ranges: st.SearchStrategy[Optional[Sequence[ObjectIdentityRange]]] = optionals(
-            st.lists(oid_ranges())
-        ),
+        req_id: st.SearchStrategy[Optional[Text]] = optionals(st.text()),
         config: st.SearchStrategy[Optional[Config]] = optionals(configs()),
 ) -> st.SearchStrategy[SnmpRequest]:
+    # pylint: disable=too-many-arguments, redefined-outer-name, redefined-builtin
     """Generate an SnmpRequest."""
-    return st.builds(  # type: ignore
-        SnmpRequest, type, host, communities, oids, ranges, config
+    return st.builds(
+        SnmpRequest, type, host, communities, oids, st.none(), req_id, config
     )
 
 
@@ -161,7 +158,8 @@ def snmp_errors(
         err_oid: st.SearchStrategy[Optional[ObjectIdentity]] = optionals(oids()),
         message:    st.SearchStrategy[Optional[Text]] = optionals(st.text())
 ) -> st.SearchStrategy[SnmpError]:
+    # pylint: disable=too-many-arguments, redefined-outer-name, redefined-builtin
     """Generate an SnmpError."""
-    return st.builds(  # type: ignore
+    return st.builds(
         SnmpError, type, request, sys_errno, snmp_errno, err_stat, err_index, err_oid, message
     )

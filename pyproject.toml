@@ -36,7 +36,9 @@ multi_line_output = 5
 default_section = "THIRDPARTY"
 no_lines_before = "LOCALFOLDER"
 
-[tool.pylint]
+[tool.pylint.'MESSAGES CONTROL']
+extension-pkg-whitelist = "snmp_stream._snmp_stream"
+ignore-patterns = ".*.pyi"
 max-line-length = 100
 
 [build-system]

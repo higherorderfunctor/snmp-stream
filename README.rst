@@ -50,7 +50,7 @@ Quick Start
    source bin/activate
 
    # testing
-   poetry run pytest -v --hypothesis-show-statistics tests
+   poetry run pytest -v tests
 
    # linting
    poetry run isort snmp_stream tests
@@ -58,3 +58,9 @@ Quick Start
    poetry run flake8 snmp_stream tests
    poetry run mypy -p snmp_stream -p tests
    poetry run bandit -r snmp_stream
+
+   # start a virtual device
+   snmpsimd.py --agent-udpv4-endpoint=127.0.0.1:1161 --process-user=root --process-group=root
+
+   # query the virtual device
+   "import numpy as np;from snmp_stream import *;response = walk('127.0.0.1:1161',('recorded/linux-full-walk', 'V2C'),['1.3.6.1.2.1.2.2.1.1','1.3.6.1.2.1.2.2.1.2'],req_id='abc',config={'retries': 1, 'timeout': 3});print(np.array2string(response.results.reshape(response.results.size >> 3, 8)))"

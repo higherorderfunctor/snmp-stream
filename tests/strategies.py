@@ -4,12 +4,12 @@ from typing import Optional, TypeVar
 
 import hypothesis.strategies as st
 
-T = TypeVar('T')
+T = TypeVar('T')  # pylint: disable=invalid-name
 
 
 def optionals(strategy: st.SearchStrategy[T]) -> st.SearchStrategy[Optional[T]]:
     """Generate an optional strategy."""
-    return st.one_of(  # type: ignore
+    return st.one_of(
         st.none(), strategy
     )
 
