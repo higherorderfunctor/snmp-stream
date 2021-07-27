@@ -136,7 +136,7 @@ The complete record is designed to be efficiently transmitted to another node in
    import snmp_stream._snmp_stream as snmp
 
    # the SessionManager is a basic queue for holding request tasks and state
-   session = snmp.SessionManager()
+   session = snmp.SessionManager(snmp.Config(...))
 
    # add 1 or more requests to the queue
    session.add_request(snmp.SnmpRequest(...))
@@ -154,5 +154,49 @@ The complete record is designed to be efficiently transmitted to another node in
      else:
          # queue is empty
          break
+
+The :bash:`Config` object exposes the typical parameters seen in most SNMP libraries.
+
++--------------------------------+------------------------------------------------------------+
+| Member                         | Description                                                |
++================================+============================================================+
+| retries                        | Number of retries for the same PDU before the request is   |
+|                                | terminated (default = 3)                                   |
++--------------------------------+------------------------------------------------------------+
+| timeout                        | Number of seconds to wait for a response PDU (default = 3) |
++--------------------------------+------------------------------------------------------------+
+| max_response_var_binds_per_pdu | Maximum number of results in a single PDU (default = 10)   |
++--------------------------------+------------------------------------------------------------+
+| max_async_sessions             | Maximum number of concurrent sessions (default = 10)       |
++--------------------------------+------------------------------------------------------------+
+
+:bash:`max_response_var_binds_per_pdu` controls max repetitions in the SNMPv2 protocol.  The number of repetitions is adjusted based on the number of OIDs in the request.  For the best performance, the number of OIDs should be a multiple of :bash:`max_response_var_binds_per_pdu`.  In testing, some devices can set this value arbitrarily high and the remote device will fill the entire PDU.  Other devices won't respond if the result set doesn't fit in a single PDU.
+
+:bash:`max_async_sessions` controls the number of concurrent sessions in a single thread.  This package has not been tested for multithreading.  Instead, it is recommended to use one of python's multiprocessing libraries to take advantage of additional system cores.  Memory usage will scale with the number of concurrent sessions.
+
+The :bash:`SnmpRequest` object has the following parameters:
+
++--------------------------------+------------------------------------------------------------+
+| Member                         | Description                                                |
++================================+============================================================+
+| type                           | GET_REQUEST or WALK_REQUEST                                |
++--------------------------------+------------------------------------------------------------+
+| host                           | Target host                                                |
++--------------------------------+------------------------------------------------------------+
+| community                      | Community string [ tuple of (TEXT, V1 | V2C) ]             |
++--------------------------------+------------------------------------------------------------+
+| oids                           | List of root OIDs                                          |
++--------------------------------+------------------------------------------------------------+
+| ranges                         | Range of additional octets to be appended to root OIDs     |
++--------------------------------+------------------------------------------------------------+
+| req_id                         | Optional request ID to aid in reassembly in a distributed  |
+|                                | system                                                     |
++--------------------------------+------------------------------------------------------------+
+| config                         | Default and/or SessionManager overrides                    |
++--------------------------------+------------------------------------------------------------+
+
+Most of these fields are self explanatory within an SNMP context.  :bash:`oids` and :bash:`ranges` are the exception.  OIDs have the format :bash:`<column identifier or root OID>.<index fields>`.  If all root OIDs are from the same table, the index fields are predictable.  :bash:`ranges` is a start/stop tuple of acceptable full or partial index values.
+
+This has two uses to improve collection.  First, it can be used to reduce the memory footprint when collecting from a large table (e.g. full internet routing table).  The index can be capped to only collect a single /8 of the table at a time.  When it completes, it will be emitted to be sent to the next stage of the pipeline so the memory can be freed.  Second, for a sufficiently powerful router, multiple index ranges can be collected concurrently.
 
 Distribution and data reassembly are out-of-scope for this package.  Something like :bash:`dask` or :bash:`kafka` are candidates for distribution of requests.  Parsing the wireline data could be done directly in python or a library like :bash:`protobuf`.  :bash:`pandas` is an excellent tool for reassembling records into tabular format, a process that can also be distributed using distributed DataFrames.
