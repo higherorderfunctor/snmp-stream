@@ -155,4 +155,4 @@ The complete record is designed to be efficiently transmitted to another node in
          # queue is empty
          break
 
-Distribution and data reassembly are out-of-scope for this package.  Something like :bash:`dask` or :bash:`kafka` are candidates for distribution of requests.  Parsing the wireline data could be done directly in python or a library like :bash:`protobuf`.  :bash:`pandas` is an excellent tool for reassembling each record into tabular format, a process that can also be distributed using distributed DataFrames.
+Distribution and data reassembly are out-of-scope for this package.  Something like :bash:`dask` or :bash:`kafka` are candidates for distribution of requests.  Parsing the wireline data could be done directly in python or a library like :bash:`protobuf`.  :bash:`pandas` is an excellent tool for reassembling records into tabular format, a process that can also be distributed using distributed DataFrames.
