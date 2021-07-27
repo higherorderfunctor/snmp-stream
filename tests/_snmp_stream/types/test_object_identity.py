@@ -39,10 +39,10 @@ def test_str(
 ) -> None:
     """Test .__str__()."""
     if len(oid) == 0:
-        assert str(oid) == "ObjectIdentity('')"
+        assert str(oid) == ''
     else:
         assert str(oid) == (
-            "ObjectIdentity('."+'.'.join(map(str, list(oid))) + "')"
+            '.'+'.'.join(map(str, list(oid)))
         )
 
 

@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # Useful environment settings for running linters
-
-source .env/bin/activate
+source $(poetry env info --path)/bin/activate
 
 BUILD_PATH=$(poetry run python -c 'import sys;import sysconfig;print("build/temp.", sysconfig.get_platform(), "-", ".".join(map(str, sys.version_info[:2])), sep="")')
 
@@ -23,5 +22,6 @@ export CPLUS_INCLUDE_PATH="${CPLUS_INCLUDE_PATH}:include"
 # setup compile_commands.json
 ln -sfn ${BUILD_PATH}/compile_commands.json .
 
+# setup typing stubs
 mkdir -p .stubs
 ln -sfn  "${PYTHON_PATH}/lib/python${PYTHON_VERSION}/site-packages/hypothesis" .stubs

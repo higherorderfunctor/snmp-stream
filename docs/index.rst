@@ -1,28 +1,21 @@
 Welcome to snmp-streams's documentation!
 ========================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: First Steps
+.. automodule:: snmp_stream
+   :members:
+   :private-members:
+   :special-members:
 
-   first_steps/introduction
-   first_steps/getting_started
+.. automodule:: snmp_stream._snmp_stream
+   :members:
+   :private-members:
+   :special-members:
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Usage
-
-   usage/single_use_api
-   usage/streaming_api
-   usage/low_level_api
-   usage/api_reference
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Development
-
-   development/getting_started
-   development/internal_api_reference
+.. doxygennamespace:: snmp_stream
+   :members:
+   :protected-members:
+   :private-members:
+   :undoc-members:
 
 
 Indices and tables

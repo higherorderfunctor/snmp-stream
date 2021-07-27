@@ -17,4 +17,5 @@ def test_pickle(
     """Test pickling an SnmpError."""
     assert isinstance(snmp_error, SnmpError)
     other: SnmpError = pickle.loads(pickle.dumps(snmp_error))
-    snmp_error == other
+    print(snmp_error)
+    assert snmp_error == other
