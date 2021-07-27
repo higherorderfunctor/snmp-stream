@@ -56,7 +56,7 @@ class SnmpRequest:
     host: Text
     community: Community
     oids: Sequence[ObjectIdentity]
-    parameters: Optional[Sequence[ObjectIdentityRange]]
+    ranges: Optional[Sequence[ObjectIdentityRange]]
     req_id: Optional[Text]
     config: Optional[Config]
     def __init__(self, type: SnmpRequestType, host: Text, communities: Community, oids: Sequence[ObjectIdentity], ranges: Optional[Sequence[ObjectIdentityRange]] = None, req_id: Optional[Text] = None, config: Config = None) -> None: ...
