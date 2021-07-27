@@ -75,7 +75,7 @@ Design Philosophy
 +--------------+----------------------------------------------------+
 | Header Bytes | Description                                        |
 +==============+====================================================+
-| 0            | System byte order (0 = little, 1 = big             |
+| 0            | System byte order (0 = little, 1 = big)            |
 +--------------+----------------------------------------------------+
 | 1            | System WORD size (e.g. 8 for a 64 bit system)      |
 +--------------+----------------------------------------------------+
@@ -106,7 +106,7 @@ Following is a repeating data structure for every root OID.
 + sizeof(OID)        | Root OID padded to system WORD size (one octet per WORD) |
 +--------------------+----------------------------------------------------------+
 
-Last are the results in the following repeating structure.
+Last are the results in the following repeating data structure.
 
 +--------------------+----------------------------------------------------------+
 | System WORDs       | Description                                              |
@@ -129,13 +129,13 @@ Last are the results in the following repeating structure.
 | sizeof(value)      | Value padded to system WORD size                         |
 +--------------------+----------------------------------------------------------+
 
-The complete record is designed to be efficiently transmitted to another node in a data pipeline for processing and reassembly.  Basic usage is as follows:
+The complete record is designed to be efficiently transmitted to another node in a data pipeline for processing and reassembly.  Data is copied into this record from NetSNMP without ever needing to be pickled.  Basic usage is as follows:
 
 .. code::
 
    import snmp_stream._snmp_stream as snmp
 
-   # the SessionManager is a basic queue for holding request tasks
+   # the SessionManager is a basic queue for holding request tasks and state
    session = snmp.SessionManager()
 
    # add 1 or more requests to the queue
